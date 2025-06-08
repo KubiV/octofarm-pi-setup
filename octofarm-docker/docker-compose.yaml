@@ -1,0 +1,71 @@
+
+volumes:
+  mongodb-data:
+  octoprint1-data:
+  octoprint2-data:
+
+services:
+
+  mongodb:
+    image: arm64v8/mongo:4.2.3-bionic
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: octofarm
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/data/db
+    restart: unless-stopped
+
+  octofarm:
+    image: thetinkerdad/octofarm:arm64-1.1.4
+    container_name: octofarm
+    environment:
+      MONGOHOST: mongodb
+      MONGOUSER: root
+      MONGOPASS: rootpassword
+    ports:
+      - 4000:4000
+    volumes:
+      - ./logs/:/root/.npm/_logs/
+    restart: unless-stopped
+
+  octoprint1:
+    image: octoprint/octoprint:latest
+    container_name: octoprint1
+    ports:
+      - 5001:80            # Lokální port 5000 mapován na port 80 v kontejneru
+    volumes:
+      - octoprint1-data:/octoprint
+    restart: unless-stopped
+    environment:
+      ENABLE_MJPG_STREAMER: "true"    # pokud máte kameru, lze povolit streamování
+    devices:
+      - /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0:/dev/ttyUSB0 # přes příkaz: ls -l /dev/serial/by-id/
+
+  octoprint2:
+    image: octoprint/octoprint:latest
+    container_name: octoprint2
+    ports:
+      - 5002:80            # Lokální port 5001 mapován na port 80 v kontejneru
+    volumes:
+      - octoprint2-data:/octoprint
+    restart: unless-stopped
+    environment:
+      ENABLE_MJPG_STREAMER: "true"
+    devices:
+      - /dev/serial/by-id/usb-STMicroelectronics_MARLIN_STM32G0B1RE_CDC_in_FS_Mode_203E345B4D41-if00:/dev/ttyACM0
+      
+  mjpg-streamer:
+    image: openhorizon/mjpg-streamer-pi3
+    container_name: mjpg-streamer
+    restart: unless-stopped
+    devices:
+      - /dev/video0:/dev/video0
+    ports:
+      - 8081:8080
+    command: >
+      ./mjpg_streamer
+      -i "input_uvc.so -d /dev/video0 -r 1280x720 -f 30"
+      -o "output_http.so -p 8080 -w ./www"

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Řídící panel</title>
+  <style>
+    iframe { border: none; width: 100%; height: 400px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .menu { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <button onclick="toggleLight(true)">Zapnout světla</button>
+    <button onclick="toggleLight(false)">Vypnout světla</button>
+  </div>
+
+  <div class="grid">
+    <iframe src="http://192.168.0.106:8081/?action=stream"></iframe>
+    <iframe src="http://192.168.0.106:5001/"></iframe>
+    <iframe src="http://192.168.0.106:5002/"></iframe>
+  </div>
+
+  <script>
+    function toggleLight(state) {
+      fetch(`/relay/${state ? 'on' : 'off'}`, { method: 'POST' })
+        .then(res => res.ok ? alert(`Světla ${state ? 'zapnuta' : 'vypnuta'}`) : alert('Chyba'))
+        .catch(err => alert('Chyba při odesílání požadavku'));
+    }
+  </script>
+</body>
+</html>
