@@ -23,3 +23,8 @@ restrat docker
 ```sh
 sudo systemctl restart dockersudo iptables
 ```
+
+ssh if not working on a main device
+```sh
+ssh-keygen -R 192.168.0.XX
+```
