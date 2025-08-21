@@ -8,6 +8,22 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_URL="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main"
 
+# TODO: Update these URLs before using!
+# Replace YOUR_USERNAME with your GitHub username
+# Replace YOUR_REPO with your repository name
+# Example: REPO_URL="https://raw.githubusercontent.com/johndoe/rpi-setup/main"
+
+# Check if REPO_URL still contains placeholder values
+if [[ "$REPO_URL" == *"YOUR_USERNAME"* ]] || [[ "$REPO_URL" == *"YOUR_REPO"* ]]; then
+    error "Repository URL not configured!"
+    error "Please update the REPO_URL variable in this script with your actual GitHub repository details."
+    error "Current URL: $REPO_URL"
+    echo
+    info "If you're running this locally, the script will look for files in the same directory instead."
+    REPO_URL="file://$(pwd)"
+    warn "Switching to local file mode..."
+fi
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -34,10 +50,41 @@ info() {
 # Function to download a script if not present
 download_script() {
     local script_name="$1"
-    if [ ! -f "$SCRIPT_DIR/$script_name" ]; then
-        log "Downloading $script_name..."
-        curl -sSL "$REPO_URL/$script_name" -o "$SCRIPT_DIR/$script_name"
-        chmod +x "$SCRIPT_DIR/$script_name"
+    local target_path="$SCRIPT_DIR/$script_name"
+    local target_dir=$(dirname "$target_path")
+    
+    # Create directory if it doesn't exist
+    mkdir -p "$target_dir"
+    
+    if [ ! -f "$target_path" ]; then
+        # Check if we're in local mode
+        if [[ "$REPO_URL" == "file://"* ]]; then
+            local local_path="$(pwd)/$script_name"
+            if [ -f "$local_path" ]; then
+                log "Copying local file $script_name..."
+                cp "$local_path" "$target_path"
+                chmod +x "$target_path"
+            else
+                error "Local file not found: $local_path"
+                exit 1
+            fi
+        else
+            log "Downloading $script_name..."
+            if curl -sSL "$REPO_URL/$script_name" -o "$target_path"; then
+                chmod +x "$target_path"
+                log "Successfully downloaded $script_name"
+            else
+                error "Failed to download $script_name from $REPO_URL/$script_name"
+                error "This usually means:"
+                error "1. The repository URL is incorrect"
+                error "2. The file doesn't exist in the repository"
+                error "3. Network connectivity issues"
+                echo
+                info "Please check that you've updated the REPO_URL variable in this script"
+                info "Current REPO_URL: $REPO_URL"
+                exit 1
+            fi
+        fi
     fi
 }
 

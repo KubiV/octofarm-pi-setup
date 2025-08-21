@@ -78,6 +78,21 @@ rpi-setup/
 ├── startup.sh               # System startup script
 └── README.md                # This file
 ```
+```
+rpi-setup/
+├── install-local.sh
+├── modules/
+│   ├── system-setup.sh
+│   ├── docker-setup.sh
+│   ├── camera-setup.sh
+│   ├── samba-setup.sh
+│   ├── relay-setup.sh
+│   ├── wifi-setup.sh
+│   └── tailscale-setup.sh
+├── relay_web.py
+├── docker-compose.yaml
+└── startup.sh
+```
 
 ## Requirements
 
