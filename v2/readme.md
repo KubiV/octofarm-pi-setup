@@ -8,14 +8,14 @@ This repository contains a modular installation system for setting up a complete
 
 ```bash
 # Download and run the installer directly
-curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/KubiV/octofarm-pi-setup/main/v2/local_install.sh | bash
 ```
 
 ### Method 2: Clone and Install
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git clone https://github.com/KubiV/octofarm-pi-setup.git
 cd YOUR_REPO
 
 # Make installer executable and run
@@ -64,8 +64,8 @@ After installation, the following services will be available:
 
 ```
 rpi-setup/
-├── install.sh                 # Main installer script
-├── modules/                   # Installation modules
+├── local_install.sh          # Main installer script
+├── modules/                  # Installation modules
 │   ├── system-setup.sh       # System updates and basic packages
 │   ├── docker-setup.sh       # Docker installation
 │   ├── camera-setup.sh       # Camera configuration
@@ -77,21 +77,6 @@ rpi-setup/
 ├── docker-compose.yaml       # Docker services configuration
 ├── startup.sh               # System startup script
 └── README.md                # This file
-```
-```
-rpi-setup/
-├── install-local.sh
-├── modules/
-│   ├── system-setup.sh
-│   ├── docker-setup.sh
-│   ├── camera-setup.sh
-│   ├── samba-setup.sh
-│   ├── relay-setup.sh
-│   ├── wifi-setup.sh
-│   └── tailscale-setup.sh
-├── relay_web.py
-├── docker-compose.yaml
-└── startup.sh
 ```
 
 ## Requirements
