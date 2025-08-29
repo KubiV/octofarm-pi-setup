@@ -5,7 +5,7 @@
 SSH into your Raspberry Pi and run:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/KubiV/octofarm-pi-setup/blob/main/v2/local_install.sh | bash
 ```
 
 **Replace `YOUR_USERNAME/YOUR_REPO` with your actual GitHub repository details.**
@@ -18,7 +18,7 @@ If you don't want to clone the entire repository, you can download just the inst
 
 ```bash
 # Download main installer
-curl -O https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/install.sh
+curl -O https://raw.githubusercontent.com/KubiV/octofarm-pi-setup/blob/main/v2/local_install.sh
 
 # Make executable
 chmod +x install.sh
@@ -30,7 +30,7 @@ chmod +x install.sh
 ### Method 2: Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git clone https://github.com/KubiV/octofarm-pi-setup.git
 cd YOUR_REPO
 chmod +x install.sh
 ./install.sh
@@ -65,7 +65,7 @@ chmod +x install.sh
 
 Your services will be available at:
 - **OctoFarm**: `http://your-pi-ip:4000`
-- **OctoPrint 1**: `http://your-pi-ip:5001`  
+- **OctoPrint 1**: `http://your-pi-ip:5001`
 - **OctoPrint 2**: `http://your-pi-ip:5002`
 - **Relay Control**: `http://your-pi-ip:8080`
 - **Camera Stream**: `http://your-pi-ip:8081`
