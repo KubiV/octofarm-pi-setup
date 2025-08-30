@@ -21,6 +21,7 @@ log "Installing Flask in virtual environment..."
 source "$VENV_DIR/bin/activate"
 pip install --upgrade pip
 pip install flask
+pip install pyserial
 deactivate
 
 log "Installing relay web application..."

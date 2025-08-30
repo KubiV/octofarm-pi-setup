@@ -10,11 +10,15 @@ BAUD = 9600
 try:
     import serial
     ser = serial.Serial(PORT, BAUD, timeout=1)
+    mode = "REAL"
+    print("[INFO] Running in REAL serial mode", file=sys.stderr)
 except Exception:
     class DummySerial:
         def write(self, data):
-            print(f"Mock write: {data.decode().strip()}", file=sys.stderr)
+            print(f"[MOCK] Would write: {data.decode().strip()}", file=sys.stderr)
     ser = DummySerial()
+    mode = "DUMMY"
+    print("[INFO] Running in DUMMY serial mode", file=sys.stderr)
 
 html = """
 <!DOCTYPE html>
@@ -33,8 +37,20 @@ html = """
       background: #2d7cff;
       color: white;
       padding: 30px 0 20px 0;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
       box-shadow: 0 2px 8px #aaa;
+    }
+    .mode {
+      font-size: 18px;
+      color: white;
+      padding: 8px;
+      {% if mode == 'REAL' %}
+      background: #28a745;
+      {% else %}
+      background: #dc3545;
+      {% endif %}
+      margin-bottom: 30px;
+      box-shadow: 0 2px 6px #bbb;
     }
     h3 {
       color: #2d7cff;
@@ -63,6 +79,7 @@ html = """
 </head>
 <body>
   <h1>Ovládání relé</h1>
+  <div class="mode">Režim: {{ mode }}</div>
   {% for r in [1,2,3] %}
     <h3>Relé {{ r }}</h3>
     <form method="post">
@@ -82,8 +99,8 @@ def index():
         # Print relay action to terminal
         relay, state = cmd.split(":")
         action = "ON" if state == "1" else "OFF"
-        print(f"Relay {relay[-1]} turned {action}", file=sys.stderr)
-    return render_template_string(html)
+        print(f"[{mode}] Relay {relay[-1]} turned {action}", file=sys.stderr)
+    return render_template_string(html, mode=mode)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
